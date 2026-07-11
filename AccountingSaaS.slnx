@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/backend/">
+    <Project Path="src/backend/AccountingSaaS.Application/AccountingSaaS.Application.csproj" />
+    <Project Path="src/backend/AccountingSaaS.Domain/AccountingSaaS.Domain.csproj" />
+    <Project Path="src/backend/AccountingSaaS.Infrastructure/AccountingSaaS.Infrastructure.csproj" />
+    <Project Path="src/backend/AccountingSaaS.WebApi/AccountingSaaS.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AccountingSaaS.IntegrationTests/AccountingSaaS.IntegrationTests.csproj" />
+    <Project Path="tests/AccountingSaaS.UnitTests/AccountingSaaS.UnitTests.csproj" />
+  </Folder>
+</Solution>
