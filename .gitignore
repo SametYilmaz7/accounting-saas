@@ -1,0 +1,44 @@
+# .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+TestResults/
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+dist/
+coverage/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Local development data
+data/
+storage/
+uploads/
+
+# Secrets and certificates
+*.pfx
+*.p12
+*.pem
+*.key
