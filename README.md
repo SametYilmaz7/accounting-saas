@@ -1,6 +1,8 @@
-# Accounting SaaS
+# SaaS Platform
 
-AI-supported, web-based, multi-tenant accounting SaaS platform.
+A reusable, domain-agnostic, multi-tenant SaaS platform built with ASP.NET Core, PostgreSQL, and Next.js.
+
+A Tenant represents an organization or workspace using the SaaS platform.
 
 ## Architecture
 
