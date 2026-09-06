@@ -19,7 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\backend\AccountingSaaS.WebApi\AccountingSaaS.WebApi.csproj" />
+    <ProjectReference Include="..\..\src\backend\SaaSPlatform.Domain\SaaSPlatform.Domain.csproj" />
+    <ProjectReference Include="..\..\src\backend\SaaSPlatform.Application\SaaSPlatform.Application.csproj" />
   </ItemGroup>
 
 </Project>

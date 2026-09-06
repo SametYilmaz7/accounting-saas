@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\AccountingSaaS.Application\AccountingSaaS.Application.csproj" />
-    <ProjectReference Include="..\AccountingSaaS.Domain\AccountingSaaS.Domain.csproj" />
+    <ProjectReference Include="..\SaaSPlatform.Domain\SaaSPlatform.Domain.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

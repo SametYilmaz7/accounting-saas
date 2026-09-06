@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/backend/">
+    <Project Path="src/backend/SaaSPlatform.Application/SaaSPlatform.Application.csproj" />
+    <Project Path="src/backend/SaaSPlatform.Domain/SaaSPlatform.Domain.csproj" />
+    <Project Path="src/backend/SaaSPlatform.Infrastructure/SaaSPlatform.Infrastructure.csproj" />
+    <Project Path="src/backend/SaaSPlatform.WebApi/SaaSPlatform.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SaaSPlatform.IntegrationTests/SaaSPlatform.IntegrationTests.csproj" />
+    <Project Path="tests/SaaSPlatform.UnitTests/SaaSPlatform.UnitTests.csproj" />
+  </Folder>
+</Solution>

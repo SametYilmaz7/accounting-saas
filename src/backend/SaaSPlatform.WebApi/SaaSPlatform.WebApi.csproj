@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AccountingSaaS.Application\AccountingSaaS.Application.csproj" />
-    <ProjectReference Include="..\AccountingSaaS.Infrastructure\AccountingSaaS.Infrastructure.csproj" />
+    <ProjectReference Include="..\SaaSPlatform.Application\SaaSPlatform.Application.csproj" />
+    <ProjectReference Include="..\SaaSPlatform.Infrastructure\SaaSPlatform.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
