@@ -1,27 +1,63 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using SaaSPlatform.Application.Common.Tenancy;
 using SaaSPlatform.Domain.Common;
 using SaaSPlatform.Domain.Features.Tenants;
 
 namespace SaaSPlatform.Infrastructure.Persistence;
 
-public sealed class SaaSPlatformDbContext : DbContext
+public class SaaSPlatformDbContext : DbContext
 {
     private readonly TimeProvider _timeProvider;
+    private readonly ICurrentTenant _currentTenant;
 
     public SaaSPlatformDbContext(
         DbContextOptions<SaaSPlatformDbContext> options,
-        TimeProvider timeProvider) : base(options)
+        TimeProvider timeProvider,
+        ICurrentTenant currentTenant) : base(options)
     {
         ArgumentNullException.ThrowIfNull(timeProvider);
         _timeProvider = timeProvider;
+        ArgumentNullException.ThrowIfNull(currentTenant);
+        _currentTenant = currentTenant;
     }
 
     public DbSet<Tenant> Tenants => Set<Tenant>();
+
+    private Guid RequiredTenantId => _currentTenant.GetRequiredTenantId();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SaaSPlatformDbContext).Assembly);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (!typeof(ITenantOwned).IsAssignableFrom(entityType.ClrType))
+            {
+                continue;
+            }
+
+            if (entityType.BaseType is not null)
+            {
+                if (!typeof(ITenantOwned).IsAssignableFrom(entityType.GetRootType().ClrType))
+                {
+                    throw new InvalidOperationException("Tenant-owned inheritance requires a tenant-owned root entity.");
+                }
+
+                continue;
+            }
+
+            var entity = Expression.Parameter(entityType.ClrType, "entity");
+            Expression<Func<Guid>> requiredTenantId = () => RequiredTenantId;
+            var predicate = Expression.Lambda(
+                Expression.Equal(
+                    Expression.Property(entity, nameof(ITenantOwned.TenantId)),
+                    requiredTenantId.Body),
+                entity);
+
+            modelBuilder.Entity(entityType.ClrType).HasQueryFilter("TenantIsolation", predicate);
+        }
     }
 
     public override int SaveChanges() => SaveChanges(true);
