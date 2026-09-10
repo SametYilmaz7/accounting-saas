@@ -64,6 +64,7 @@ public class SaaSPlatformDbContext : DbContext
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
+        ValidateTenantWrites();
         ApplyAuditTimestamps();
         return base.SaveChanges(acceptAllChangesOnSuccess);
     }
@@ -75,8 +76,36 @@ public class SaaSPlatformDbContext : DbContext
         bool acceptAllChangesOnSuccess,
         CancellationToken cancellationToken = default)
     {
+        ValidateTenantWrites();
         ApplyAuditTimestamps();
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    private void ValidateTenantWrites()
+    {
+        ChangeTracker.DetectChanges();
+
+        foreach (var entry in ChangeTracker.Entries<ITenantOwned>())
+        {
+            if (entry.State is not (EntityState.Added or EntityState.Modified or EntityState.Deleted))
+            {
+                continue;
+            }
+
+            var currentTenantId = _currentTenant.GetRequiredTenantId();
+            var tenantId = entry.Property(entity => entity.TenantId);
+
+            if (tenantId.CurrentValue == Guid.Empty || tenantId.CurrentValue != currentTenantId)
+            {
+                throw new TenantIsolationViolationException();
+            }
+
+            if (entry.State is EntityState.Modified or EntityState.Deleted
+                && tenantId.OriginalValue != tenantId.CurrentValue)
+            {
+                throw new TenantIsolationViolationException();
+            }
+        }
     }
 
     private void ApplyAuditTimestamps()
