@@ -8,6 +8,26 @@
 
 ## 1. Purpose
 
+### S1-17 implementation baseline
+
+The implemented bootstrap resolver is Development-only. It accepts exactly one
+non-empty GUID, leaves missing headers unresolved, and rejects invalid or
+multiple values with minimal ProblemDetails. It does not query Tenant or check
+activation/membership. Endpoint opt-out metadata and global exception mapping
+described below are deferred; no header is required for /health, though an
+invalid supplied header is still rejected by the unchanged middleware.
+
+SaveChanges rejects empty or mismatched TenantId values for Added, Modified,
+and Deleted entities and rejects ownership mutation. It never assigns TenantId.
+The Tenant entity stores one canonical Slug, with no separate NormalizedSlug.
+These delivered decisions supersede the earlier proposed alternatives below.
+
+Production configuration uses ConnectionStrings:DefaultConnection and fails
+fast when blank. Integration tests exclusively use the externally supplied
+ConnectionStrings__IntegrationTestDatabase and validate saas_platform_test
+before migrations/setup. They serialize tests and roll back transactional
+test-only table creation and data. No production test entities are introduced.
+
 This document defines the technical design for the initial multi-tenant
 foundation.
 
@@ -461,7 +481,7 @@ the same request scope.
 
 The PostgreSQL connection string key will be:
 
-ConnectionStrings:PostgreSql
+ConnectionStrings:DefaultConnection
 
 Real development credentials must not be committed.
 
@@ -496,7 +516,7 @@ Development migration commands will be executed manually.
 
 Example future command:
 
-dotnet ef migrations add InitialTenantFoundation \
+dotnet ef migrations add InitialCreate \
   --project src/backend/SaaSPlatform.Infrastructure \
   --startup-project src/backend/SaaSPlatform.WebApi \
   --output-dir Persistence/Migrations

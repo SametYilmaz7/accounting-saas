@@ -9,6 +9,16 @@
 
 ## 1. Purpose
 
+### S1-17 implementation baseline
+
+The production migration is InitialCreate and contains only public.tenants,
+its six approved columns, primary key, unique slug index, and check constraints.
+Integration tests apply this real migration only after validating the externally
+supplied ConnectionStrings__IntegrationTestDatabase targets exactly
+saas_platform_test. The regular public.integration_test_tenant_owned_records
+table is test-only transactional DDL, removed with its data by rollback. It is
+not part of production migrations or the production model.
+
 This document defines the initial PostgreSQL schema for the multi-tenant
 foundation.
 
@@ -487,7 +497,7 @@ manual development workflows require deterministic data.
 
 The initial migration name should be:
 
-InitialTenantFoundation
+InitialCreate
 
 The migration must include only:
 
@@ -528,7 +538,7 @@ SaaSPlatform.WebApi
 
 Future command:
 
-dotnet ef migrations add InitialTenantFoundation `
+dotnet ef migrations add InitialCreate `
   --project src/backend/SaaSPlatform.Infrastructure `
   --startup-project src/backend/SaaSPlatform.WebApi `
   --output-dir Persistence/Migrations
@@ -545,7 +555,7 @@ Migrations must be reviewed before database update.
 
 The application connection string key is:
 
-ConnectionStrings:PostgreSql
+ConnectionStrings:DefaultConnection
 
 A real connection string must not be committed.
 
@@ -721,7 +731,7 @@ Mitigation:
 
 Mitigation:
 
-- Keep InitialTenantFoundation migration narrowly scoped
+- Keep InitialCreate migration narrowly scoped
 - Review generated SQL before applying
 - Reject unexpected tables or dependencies
 
@@ -738,7 +748,7 @@ The following technical-design questions are resolved here:
 - Seed tenant: not included in migration
 - Local development database: saas_platform_dev
 - Local integration test database: saas_platform_test
-- Migration name: InitialTenantFoundation
+- Migration name: InitialCreate
 - Migration location: Infrastructure/Persistence/Migrations
 
 ## 22. Remaining Open Questions

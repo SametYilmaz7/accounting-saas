@@ -10,6 +10,23 @@
 
 ## 1. Purpose
 
+### S1-17 implemented API scope
+
+The delivered S1-12 bootstrap behavior supersedes the proposed resolution flow
+and error examples below: Development-only X-Tenant-Id parsing requires one
+non-empty GUID when present. A missing header continues unresolved. Invalid,
+empty, or multiple values return 400 application/problem+json with title
+"Tenant identifier is invalid." and detail "X-Tenant-Id must contain exactly
+one non-empty GUID." No tenant lookup, activation/membership checks, endpoint
+opt-out metadata, or global exception mapping are implemented. The detailed
+errorCode/traceId contracts below remain proposed, not current API guarantees.
+
+GET /health checks connectivity through SaaSPlatformDbContext and returns only
+{"status":"Healthy"} with HTTP 200 or {"status":"Unhealthy"} with HTTP 503.
+No tenant header is required. An invalid supplied header in Development is
+still rejected by the existing middleware before the health endpoint runs.
+There are no business or diagnostic endpoints, authentication, or authorization.
+
 This document defines the HTTP API behavior required by the initial
 multi-tenant foundation.
 

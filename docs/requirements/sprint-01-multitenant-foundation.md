@@ -7,6 +7,17 @@
 
 ## 1. Sprint Goal
 
+### S1-17 implementation baseline
+
+The delivered scope follows the explicit S1-05 through S1-16 task decisions.
+Missing development headers leave tenant context unresolved; tenant-owned
+operations then fail closed. Invalid, empty, or multiple header values return
+400. Tenant existence/activation lookup and global HTTP exception mapping are
+not implemented. IsActive is persisted, but activation enforcement remains
+deferred. References below to activation enforcement and HTTP error handling
+beyond header validation describe outstanding design requirements, not delivered
+acceptance evidence.
+
 Establish the minimum secure multi-tenant foundation required for all
 future tenant-owned business modules.
 
@@ -88,7 +99,9 @@ X-Tenant-Id
 
 The header value must be parsed as a Guid.
 
-Missing or invalid tenant identifiers must produce a controlled client error.
+Missing headers leave the context unresolved. Invalid, empty, or multiple
+header values produce HTTP 400. Required unresolved context throws a controlled
+application exception when tenant-scoped code accesses it.
 
 The development header mechanism must be clearly marked as temporary and must
 not be treated as production authentication or authorization.
@@ -107,7 +120,8 @@ Tenant-independent entities must not be filtered by TenantId.
 
 ### FR-006 Tenant Write Protection
 
-New tenant-owned records must be assigned to the active tenant.
+New tenant-owned records must already contain the active non-empty TenantId.
+SaveChanges validates ownership; it does not assign TenantId automatically.
 
 The active TenantId must not be accepted from untrusted client payloads as the
 authoritative tenant context.
